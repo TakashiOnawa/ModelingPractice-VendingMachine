@@ -1,3 +1,4 @@
+```uml
 @startuml
 class 自動販売機
 {
@@ -34,3 +35,4 @@ class 金額
 ラック o-- 金額
 ラック o-- "0..*" 商品
 @enduml
+```
