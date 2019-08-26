@@ -14,5 +14,10 @@ namespace VendingMachine.Domain
 
         public DisplayProductNumber ProductNumber { get; private set; }
         public Product Product { get; private set; }
+
+        public Product Purchase()
+        {
+            return new Product(Product.Name, Product.Price);
+        }
     }
 }

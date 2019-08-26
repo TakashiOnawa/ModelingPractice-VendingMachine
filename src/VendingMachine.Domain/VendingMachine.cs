@@ -1,38 +1,54 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace VendingMachine.Domain
 {
     public class VendingMachine
     {
-        private readonly List<DisplayProduct> _displayProducts = new List<DisplayProduct>();
-        private readonly List<Money> _postedMoney = new List<Money>();
+        private readonly Dictionary<DisplayProductNumber, DisplayProduct> _displayProducts = new Dictionary<DisplayProductNumber, DisplayProduct>();
+        private readonly Deposit _deposit = new Deposit();
 
         public static VendingMachine Create()
         {
             var vendingMachine = new VendingMachine();
-            vendingMachine._displayProducts.Add(new DisplayProduct(new DisplayProductNumber(1), new Product("コーラ", new Price(100))));
-            vendingMachine._displayProducts.Add(new DisplayProduct(new DisplayProductNumber(1), new Product("オレンジジュース", new Price(100))));
-            vendingMachine._displayProducts.Add(new DisplayProduct(new DisplayProductNumber(1), new Product("緑茶", new Price(100))));
-            vendingMachine._displayProducts.Add(new DisplayProduct(new DisplayProductNumber(1), new Product("味噌汁", new Price(100))));
-            vendingMachine._displayProducts.Add(new DisplayProduct(new DisplayProductNumber(1), new Product("レッドブル", new Price(100))));
+            var displayProductNumber = new DisplayProductNumber(1);
+            vendingMachine._displayProducts.Add(displayProductNumber, new DisplayProduct(displayProductNumber, new Product("コーラ", new Price(100))));
+            displayProductNumber = new DisplayProductNumber(2);
+            vendingMachine._displayProducts.Add(displayProductNumber, new DisplayProduct(displayProductNumber, new Product("オレンジジュース", new Price(100))));
+            displayProductNumber = new DisplayProductNumber(3);
+            vendingMachine._displayProducts.Add(displayProductNumber, new DisplayProduct(displayProductNumber, new Product("緑茶", new Price(100))));
+            displayProductNumber = new DisplayProductNumber(4);
+            vendingMachine._displayProducts.Add(displayProductNumber, new DisplayProduct(displayProductNumber, new Product("味噌汁", new Price(100))));
+            displayProductNumber = new DisplayProductNumber(5);
+            vendingMachine._displayProducts.Add(displayProductNumber, new DisplayProduct(displayProductNumber, new Product("レッドブル", new Price(100))));
             return vendingMachine;
         }
 
         public void Post(Money money)
         {
-            throw new NotImplementedException();
+            _deposit.Post(money);
         }
 
         public Product Purchase(DisplayProductNumber displayProductNumber)
         {
-            throw new NotImplementedException();
+            if (!_displayProducts.TryGetValue(displayProductNumber, out var displayProduct))
+                return null;
+
+            if (!_deposit.CanPurches(displayProduct))
+                return null;
+
+            var product = displayProduct.Purchase();
+
+            _deposit.StorePurchesdAmount(product.Price);
+
+            return product;
         }
 
-        public List<Money> Refund()
+        public IEnumerable<Money> Refund()
         {
-            throw new NotImplementedException();
+            return _deposit.Refund();
         }
     }
 }

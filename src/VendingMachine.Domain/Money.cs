@@ -4,7 +4,7 @@ using System.Text;
 
 namespace VendingMachine.Domain
 {
-    public class Money
+    public class Money : IEquatable<Money>
     {
         public static Money _100 = new Money(100);
 
@@ -14,5 +14,21 @@ namespace VendingMachine.Domain
         }
 
         public int Value { get; private set; }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as Money);
+        }
+
+        public bool Equals(Money other)
+        {
+            return other != null &&
+                   Value == other.Value;
+        }
+
+        public override int GetHashCode()
+        {
+            return Value.GetHashCode();
+        }
     }
 }
