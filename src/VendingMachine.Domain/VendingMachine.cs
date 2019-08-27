@@ -36,12 +36,12 @@ namespace VendingMachine.Domain
             if (!_displayProducts.TryGetValue(displayProductNumber, out var displayProduct))
                 return null;
 
-            if (!_deposit.CanPurches(displayProduct))
+            if (!displayProduct.CanPurchase(_deposit))
                 return null;
 
             var product = displayProduct.Purchase();
 
-            _deposit.StorePurchesdAmount(product.Price);
+            _deposit.StorePurchesdAmount(displayProduct.Price);
 
             return product;
         }

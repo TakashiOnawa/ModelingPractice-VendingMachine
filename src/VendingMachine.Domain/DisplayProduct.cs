@@ -10,10 +10,25 @@ namespace VendingMachine.Domain
         {
             ProductNumber = productNumber ?? throw new ArgumentNullException(nameof(productNumber));
             Product = product ?? throw new ArgumentNullException(nameof(product));
+            Price = product.Price;
+        }
+
+        public DisplayProduct(DisplayProductNumber productNumber, Price price, Product product)
+        {
+            ProductNumber = productNumber ?? throw new ArgumentNullException(nameof(productNumber));
+            Product = product ?? throw new ArgumentNullException(nameof(product));
+            Price = price ?? throw new ArgumentNullException(nameof(price));
         }
 
         public DisplayProductNumber ProductNumber { get; private set; }
+        public Price Price { get; private set; }
+        public SalesStatus SalesStatus { get; private set; } = SalesStatus.Unsalable;
         public Product Product { get; private set; }
+
+        public bool CanPurchase(Deposit deposit)
+        {
+            return deposit.CanPurches(Price);
+        }
 
         public Product Purchase()
         {
