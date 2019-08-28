@@ -15,8 +15,22 @@ namespace VendingMachine.Domain
             _depositAmount = _depositAmount.Add(money);
         }
 
+        public void StorePurchesdAmount(Price price)
+        {
+            if (!CanPurches(price))
+                return;
+
+            _depositAmount = _depositAmount.Minus(price);
+        }
+
+        public bool CanPurches(Price price)
+        {
+            return _depositAmount.Value >= price.Value;
+        }
+
         public IEnumerable<Money> Refund()
         {
+            // 今のところ結構てきとうなロジック。
             var refundMoney = new List<Money>();
             var refundAmount = 0;
 
@@ -31,16 +45,6 @@ namespace VendingMachine.Domain
 
             _depositAmount = DepositAmount.Empty();
             return refundMoney;
-        }
-
-        public void StorePurchesdAmount(Price price)
-        {
-            _depositAmount = _depositAmount.Minus(price);
-        }
-
-        public bool CanPurches(Price price)
-        {
-            return _depositAmount.Value >= price.Value;
         }
     }
 }
