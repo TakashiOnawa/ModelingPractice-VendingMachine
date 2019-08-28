@@ -20,12 +20,17 @@ namespace VendingMachine.Domain
             return displayProduct;
         }
 
-        public void Restock(DisplayProductNumber displayProductNumber, int salableStock)
+        public DisplayProduct FindWithValidate(DisplayProductNumber displayProductNumber)
         {
             var displayProduct = Find(displayProductNumber);
-            if (displayProduct == null)
-                return;
+            if (displayProduct == null) throw new InvalidOperationException("DisplayProduct is not exists.");
 
+            return displayProduct;
+        }
+
+        public void Restock(DisplayProductNumber displayProductNumber, int salableStock)
+        {
+            var displayProduct = FindWithValidate(displayProductNumber);
             displayProduct.Restock(salableStock);
         }
     }

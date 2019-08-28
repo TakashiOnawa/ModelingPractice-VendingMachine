@@ -32,10 +32,8 @@ namespace VendingMachine.Domain
 
         public Product Purchase(DisplayProductNumber displayProductNumber)
         {
-            var displayProduct = _displayProducts.Find(displayProductNumber);
+            var displayProduct = _displayProducts.FindWithValidate(displayProductNumber);
 
-            if (displayProduct == null)
-                return null;
             if (!_deposit.CanPurches(displayProduct.DisplayPrice))
                 return null;
 
@@ -47,6 +45,18 @@ namespace VendingMachine.Domain
         public IEnumerable<Money> Refund()
         {
             return _deposit.Refund();
+        }
+
+        public SalesStatus GetSalesStatus(DisplayProductNumber displayProductNumber)
+        {
+            var displayProduct = _displayProducts.FindWithValidate(displayProductNumber);
+
+            if (displayProduct.SoldOut)
+                return SalesStatus.SoldOut;
+            if (_deposit.CanPurches(displayProduct.DisplayPrice))
+                return SalesStatus.Salable;
+
+            return SalesStatus.Unsalable;
         }
     }
 }
