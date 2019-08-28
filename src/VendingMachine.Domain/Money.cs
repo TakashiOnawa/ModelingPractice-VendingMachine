@@ -6,7 +6,10 @@ namespace VendingMachine.Domain
 {
     public class Money : IEquatable<Money>
     {
+        public static Money _10 = new Money(10);
         public static Money _100 = new Money(100);
+        public static Money _500 = new Money(500);
+        public static Money _1000 = new Money(1000);
 
         private Money(int value)
         {

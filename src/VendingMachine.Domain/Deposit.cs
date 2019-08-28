@@ -1,18 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace VendingMachine.Domain
 {
     public class Deposit
     {
-        private readonly List<Money> _depositMoney = new List<Money>();
-        private DepositAmount _depositAmount = DepositAmount.Empty();
+        private readonly List<Money> _depositMoneyList = new List<Money>();
+        private Amount _insertedAmount = Amount.EmptyAmount();
+
+        public void Restock(IEnumerable<Money> change)
+        {
+            _depositMoneyList.AddRange(change);
+        }
 
         public void Post(Money money)
         {
-            _depositMoney.Add(money);
-            _depositAmount = _depositAmount.Add(money);
+            _depositMoneyList.Add(money);
+            _insertedAmount = _insertedAmount.Add(money);
         }
 
         public void StorePurchesdAmount(Price price)
@@ -20,31 +26,55 @@ namespace VendingMachine.Domain
             if (!CanPurches(price))
                 return;
 
-            _depositAmount = _depositAmount.Minus(price);
+            _insertedAmount = _insertedAmount.Minus(price);
         }
 
         public bool CanPurches(Price price)
         {
-            return _depositAmount.Value >= price.Value;
+            return _insertedAmount.Value >= price.Value && CanRefund(price);
+        }
+
+        public bool CanRefund(Price price)
+        {
+            if (_insertedAmount.Value < price.Value)
+                return false;
+
+            var remainingAmount = Refund(price, out var refundMoneyList);
+
+            return remainingAmount.Empty;
         }
 
         public IEnumerable<Money> Refund()
         {
-            // 今のところ結構てきとうなロジック。
-            var refundMoney = new List<Money>();
-            var refundAmount = 0;
+            var remainingAmount = Refund(Price.FreePrice(), out var refundMoneyList);
 
-            foreach (var money in _depositMoney)
+            if (!remainingAmount.Empty)
+                throw new InvalidOperationException("Can't return change.");
+
+            return refundMoneyList;
+        }
+
+        private Amount Refund(Price exceptPrice, out List<Money> refundMoneyList)
+        {
+            refundMoneyList = new List<Money>();
+
+            var remainingAmount = _insertedAmount.Minus(exceptPrice);
+
+            foreach (var groupingMoney in _depositMoneyList.GroupBy(_ => _.Value).OrderBy(_ => _.Key))
             {
-                if (refundAmount >= _depositAmount.Value)
-                    break;
+                var currentMoneyList = groupingMoney.ToList();
+                var currentMoneyAmount = groupingMoney.Key;
 
-                refundMoney.Add(money);
-                refundAmount += money.Value;
+                while (remainingAmount.Value >= currentMoneyAmount && currentMoneyList.Count > 0)
+                {
+                    var money = currentMoneyList.Last();
+                    remainingAmount = remainingAmount.Minus(money);
+                    currentMoneyList.Remove(money);
+                    refundMoneyList.Add(money);
+                }
             }
 
-            _depositAmount = DepositAmount.Empty();
-            return refundMoney;
+            return remainingAmount;
         }
     }
 }

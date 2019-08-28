@@ -10,7 +10,7 @@ namespace VendingMachine.Domain.Test
         public void 指定された番号の商品を購入できる()
         {
             var vendingMachine = CreateVendingMachine();
-            vendingMachine.Restock(new DisplayProductNumber(1), 5);
+            vendingMachine.RestockProduct(new DisplayProductNumber(1), 5);
 
             vendingMachine.Post(Money._100);
             var product = vendingMachine.Purchase(new DisplayProductNumber(1));
@@ -34,9 +34,22 @@ namespace VendingMachine.Domain.Test
         }
 
         [TestMethod]
-        public void 入金額が足りていない場合は購入できない()
+        public void 入金額が足りない場合は購入できない()
         {
             var vendingMachine = CreateVendingMachine();
+
+            var product = vendingMachine.Purchase(new DisplayProductNumber(1));
+            Assert.AreEqual(null, product);
+        }
+
+        [TestMethod]
+        public void お釣りが足りない場合は購入できない()
+        {
+            var vendingMachine = CreateVendingMachine();
+
+            vendingMachine.Post(Money._10);
+            vendingMachine.Post(Money._500);
+            vendingMachine.Post(Money._1000);
 
             var product = vendingMachine.Purchase(new DisplayProductNumber(1));
             Assert.AreEqual(null, product);
@@ -63,17 +76,17 @@ namespace VendingMachine.Domain.Test
         private VendingMachine CreateVendingMachine()
         {
             var vendingMachine = new VendingMachine();
-            vendingMachine.SetProduct(new DisplayProduct(new DisplayProductNumber(1), new Product("コーラ", new Price(100))));
-            vendingMachine.SetProduct(new DisplayProduct(new DisplayProductNumber(2), new Product("オレンジジュース", new Price(100))));
-            vendingMachine.SetProduct(new DisplayProduct(new DisplayProductNumber(3), new Product("緑茶", new Price(100))));
-            vendingMachine.SetProduct(new DisplayProduct(new DisplayProductNumber(4), new Product("味噌汁", new Price(100))));
-            vendingMachine.SetProduct(new DisplayProduct(new DisplayProductNumber(5), new Product("レッドブル", new Price(100))));
+            vendingMachine.SetDisplayProduct(new DisplayProduct(new DisplayProductNumber(1), new Product("コーラ", new Price(100))));
+            vendingMachine.SetDisplayProduct(new DisplayProduct(new DisplayProductNumber(2), new Product("オレンジジュース", new Price(100))));
+            vendingMachine.SetDisplayProduct(new DisplayProduct(new DisplayProductNumber(3), new Product("緑茶", new Price(100))));
+            vendingMachine.SetDisplayProduct(new DisplayProduct(new DisplayProductNumber(4), new Product("味噌汁", new Price(100))));
+            vendingMachine.SetDisplayProduct(new DisplayProduct(new DisplayProductNumber(5), new Product("レッドブル", new Price(100))));
 
-            vendingMachine.Restock(new DisplayProductNumber(1), 5);
-            vendingMachine.Restock(new DisplayProductNumber(2), 5);
-            vendingMachine.Restock(new DisplayProductNumber(3), 5);
-            vendingMachine.Restock(new DisplayProductNumber(4), 5);
-            vendingMachine.Restock(new DisplayProductNumber(5), 5);
+            vendingMachine.RestockProduct(new DisplayProductNumber(1), 5);
+            vendingMachine.RestockProduct(new DisplayProductNumber(2), 5);
+            vendingMachine.RestockProduct(new DisplayProductNumber(3), 5);
+            vendingMachine.RestockProduct(new DisplayProductNumber(4), 5);
+            vendingMachine.RestockProduct(new DisplayProductNumber(5), 5);
             return vendingMachine;
         }
     }

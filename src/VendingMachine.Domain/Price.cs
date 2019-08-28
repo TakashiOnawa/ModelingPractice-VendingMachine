@@ -13,6 +13,11 @@ namespace VendingMachine.Domain
 
         public int Value { get; private set; }
 
+        public static Price FreePrice()
+        {
+            return new Price(0);
+        }
+
         public override bool Equals(object obj)
         {
             return Equals(obj as Price);

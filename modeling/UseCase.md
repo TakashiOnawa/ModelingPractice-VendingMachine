@@ -7,7 +7,7 @@ usecase (入金する) as Post
 usecase (商品を選択する) as SelectProduct
 usecase (返金する) as Refund
 usecase (商品を補充する) as RestockProduct
-usecase (お金を補充する) as RestockMoney
+usecase (お釣りを補充する) as RestockChange
 
 顧客 --> Purches
 Purches --> Post
@@ -18,7 +18,7 @@ Post .> Refund
 SelectProduct .> Refund
 
 管理者 --> RestockProduct
-管理者 --> RestockMoney
+管理者 --> RestockChange
 
 note right of Post
 ＜基本フロー＞

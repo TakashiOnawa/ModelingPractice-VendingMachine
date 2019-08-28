@@ -10,12 +10,17 @@ namespace VendingMachine.Domain
         private readonly DisplayProducts _displayProducts = new DisplayProducts();
         private readonly Deposit _deposit = new Deposit();
 
-        public void SetProduct(DisplayProduct displayProduct)
+        public void SetDisplayProduct(DisplayProduct displayProduct)
         {
             _displayProducts.SetDisplayProduct(displayProduct);
         }
 
-        public void Restock(DisplayProductNumber displayProductNumber, int salableStock)
+        public void RestockChange(IEnumerable<Money> change)
+        {
+            _deposit.Restock(change);
+        }
+
+        public void RestockProduct(DisplayProductNumber displayProductNumber, int salableStock)
         {
             _displayProducts.Restock(displayProductNumber, salableStock);
         }
