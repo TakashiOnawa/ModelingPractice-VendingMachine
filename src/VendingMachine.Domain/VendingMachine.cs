@@ -20,7 +20,7 @@ namespace VendingMachine.Domain
             _deposit.Restock(change);
         }
 
-        public void RestockProduct(DisplayProductNumber displayProductNumber, int salableStock)
+        public void RestockProduct(DisplayProductNumber displayProductNumber, ProductStockQuantity salableStock)
         {
             _displayProducts.Restock(displayProductNumber, salableStock);
         }

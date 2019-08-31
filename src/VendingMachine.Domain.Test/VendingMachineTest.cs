@@ -10,7 +10,6 @@ namespace VendingMachine.Domain.Test
         public void éwíËÇ≥ÇÍÇΩî‘çÜÇÃè§ïiÇçwì¸Ç≈Ç´ÇÈ()
         {
             var vendingMachine = CreateVendingMachine();
-            vendingMachine.RestockProduct(new DisplayProductNumber(1), 5);
 
             vendingMachine.Post(Money._100);
             var product = vendingMachine.Purchase(new DisplayProductNumber(1));
@@ -94,11 +93,11 @@ namespace VendingMachine.Domain.Test
             vendingMachine.SetDisplayProduct(new DisplayProduct(new DisplayProductNumber(4), new Product("ñ°ëXè`", new Price(100))));
             vendingMachine.SetDisplayProduct(new DisplayProduct(new DisplayProductNumber(5), new Product("ÉåÉbÉhÉuÉã", new Price(100))));
 
-            vendingMachine.RestockProduct(new DisplayProductNumber(1), 5);
-            vendingMachine.RestockProduct(new DisplayProductNumber(2), 5);
-            vendingMachine.RestockProduct(new DisplayProductNumber(3), 5);
-            vendingMachine.RestockProduct(new DisplayProductNumber(4), 5);
-            vendingMachine.RestockProduct(new DisplayProductNumber(5), 5);
+            vendingMachine.RestockProduct(new DisplayProductNumber(1), new ProductStockQuantity(5));
+            vendingMachine.RestockProduct(new DisplayProductNumber(2), new ProductStockQuantity(5));
+            vendingMachine.RestockProduct(new DisplayProductNumber(3), new ProductStockQuantity(5));
+            vendingMachine.RestockProduct(new DisplayProductNumber(4), new ProductStockQuantity(5));
+            vendingMachine.RestockProduct(new DisplayProductNumber(5), new ProductStockQuantity(5));
             return vendingMachine;
         }
     }

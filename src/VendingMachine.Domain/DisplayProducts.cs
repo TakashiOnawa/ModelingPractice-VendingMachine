@@ -28,7 +28,7 @@ namespace VendingMachine.Domain
             return displayProduct;
         }
 
-        public void Restock(DisplayProductNumber displayProductNumber, int salableStock)
+        public void Restock(DisplayProductNumber displayProductNumber, ProductStockQuantity salableStock)
         {
             var displayProduct = FindWithValidate(displayProductNumber);
             displayProduct.Restock(salableStock);

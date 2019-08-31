@@ -11,6 +11,7 @@ namespace VendingMachine.Domain
             ProductNumber = productNumber;
             Product = product;
             DisplayPrice = product.Price;
+            SalableStock = ProductStockQuantity.EmptyQuantity();
         }
 
         public DisplayProduct(DisplayProductNumber productNumber, Price displayPrice, Product product)
@@ -49,28 +50,26 @@ namespace VendingMachine.Domain
             }
         }
 
-        private int _salableStock;
-        public int SalableStock
+        private ProductStockQuantity _salableStock;
+        public ProductStockQuantity SalableStock
         {
             get { return _salableStock; }
             set
             {
-                if (value < 0 || value > 30)
-                    throw new InvalidOperationException(nameof(SalableStock) + " must be between 0 and 30.");
-                _salableStock = value;
+                _salableStock = value ?? throw new InvalidOperationException(nameof(SalableStock) + " is required.");
             }
         }
 
-        public bool SoldOut { get { return SalableStock <= 0; } }
+        public bool SoldOut { get { return SalableStock.Empty; } }
 
-        public void Restock(int salableStock)
+        public void Restock(ProductStockQuantity salableStock)
         {
-            SalableStock += salableStock;
+            SalableStock = SalableStock.Add(salableStock);
         }
 
         public Product Purchase()
         {
-            SalableStock--;
+            SalableStock = SalableStock.Minus(new ProductStockQuantity(1));
             return new Product(Product.Name, Product.Price); ;
         }
     }
