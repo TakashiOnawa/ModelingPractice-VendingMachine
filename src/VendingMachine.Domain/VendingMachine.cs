@@ -34,6 +34,9 @@ namespace VendingMachine.Domain
         {
             var displayProduct = _displayProducts.FindWithValidate(displayProductNumber);
 
+            if (displayProduct.SoldOut)
+                return null;
+
             if (!_deposit.CanPurches(displayProduct.DisplayPrice))
                 return null;
 

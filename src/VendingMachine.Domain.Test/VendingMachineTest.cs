@@ -56,6 +56,18 @@ namespace VendingMachine.Domain.Test
         }
 
         [TestMethod]
+        public void ”„‚èØ‚ê‚Ìê‡w“ü‚Å‚«‚È‚¢()
+        {
+            var vendingMachine = CreateVendingMachine();
+            vendingMachine.SetDisplayProduct(new DisplayProduct(new DisplayProductNumber(1), new Product("ƒR[ƒ‰", new Price(100))));
+
+            vendingMachine.Post(Money._100);
+
+            var product = vendingMachine.Purchase(new DisplayProductNumber(1));
+            Assert.AreEqual(null, product);
+        }
+
+        [TestMethod]
         public void w“üŒã‚¨’Ş‚è‚ğ•Ô‹p‚·‚é()
         {
             var vendingMachine = CreateVendingMachine();

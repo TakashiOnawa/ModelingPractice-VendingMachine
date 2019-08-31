@@ -8,21 +8,59 @@ namespace VendingMachine.Domain
     {
         public DisplayProduct(DisplayProductNumber productNumber, Product product)
         {
-            ProductNumber = productNumber ?? throw new ArgumentNullException(nameof(productNumber));
-            Product = product ?? throw new ArgumentNullException(nameof(product));
+            ProductNumber = productNumber;
+            Product = product;
             DisplayPrice = product.Price;
         }
 
         public DisplayProduct(DisplayProductNumber productNumber, Price displayPrice, Product product)
             : this(productNumber, product)
         {
-            DisplayPrice = displayPrice ?? throw new ArgumentNullException(nameof(displayPrice));
+            DisplayPrice = displayPrice;
         }
 
-        public DisplayProductNumber ProductNumber { get; private set; }
-        public Price DisplayPrice { get; private set; }
-        public Product Product { get; private set; }
-        public int SalableStock { get; private set; }
+        private DisplayProductNumber _productNumber;
+        public DisplayProductNumber ProductNumber
+        {
+            get { return _productNumber; }
+            set
+            {
+                _productNumber = value ?? throw new InvalidOperationException(nameof(ProductNumber) + " is required.");
+            }
+        }
+
+        private Price _displayPrice;
+        public Price DisplayPrice
+        {
+            get { return _displayPrice; }
+            set
+            {
+                _displayPrice = value ?? throw new InvalidOperationException(nameof(DisplayPrice) + " is required.");
+            }
+        }
+
+        private Product _product;
+        public Product Product
+        {
+            get { return _product; }
+            set
+            {
+                _product = value ?? throw new InvalidOperationException(nameof(Product) + " is reauired.");
+            }
+        }
+
+        private int _salableStock;
+        public int SalableStock
+        {
+            get { return _salableStock; }
+            set
+            {
+                if (value < 0 || value > 30)
+                    throw new InvalidOperationException(nameof(SalableStock) + " must be between 0 and 30.");
+                _salableStock = value;
+            }
+        }
+
         public bool SoldOut { get { return SalableStock <= 0; } }
 
         public void Restock(int salableStock)
@@ -32,12 +70,8 @@ namespace VendingMachine.Domain
 
         public Product Purchase()
         {
-            if (SoldOut)
-                return null;
-
-            var product = new Product(Product.Name, Product.Price);
             SalableStock--;
-            return product;
+            return new Product(Product.Name, Product.Price); ;
         }
     }
 }

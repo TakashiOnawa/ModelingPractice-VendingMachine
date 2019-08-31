@@ -24,7 +24,7 @@ namespace VendingMachine.Domain
         public void StorePurchesdAmount(Price price)
         {
             if (!CanPurches(price))
-                return;
+                throw new InvalidOperationException("Can't purches.");
 
             _insertedAmount = _insertedAmount.Minus(price);
         }
