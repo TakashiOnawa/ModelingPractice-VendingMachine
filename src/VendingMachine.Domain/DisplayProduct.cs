@@ -8,7 +8,7 @@ namespace VendingMachine.Domain
     {
         public DisplayProduct(DisplayProductNumber productNumber, Product product)
         {
-            ProductNumber = productNumber;
+            ProductNumber = productNumber ?? throw new InvalidOperationException(nameof(ProductNumber) + " is required."); ;
             Product = product;
             DisplayPrice = product.Price;
             SalableStock = ProductStockQuantity.EmptyQuantity();
@@ -20,21 +20,13 @@ namespace VendingMachine.Domain
             DisplayPrice = displayPrice;
         }
 
-        private DisplayProductNumber _productNumber;
-        public DisplayProductNumber ProductNumber
-        {
-            get { return _productNumber; }
-            set
-            {
-                _productNumber = value ?? throw new InvalidOperationException(nameof(ProductNumber) + " is required.");
-            }
-        }
+        public DisplayProductNumber ProductNumber { get; }
 
         private Price _displayPrice;
         public Price DisplayPrice
         {
             get { return _displayPrice; }
-            set
+            private set
             {
                 _displayPrice = value ?? throw new InvalidOperationException(nameof(DisplayPrice) + " is required.");
             }
@@ -44,7 +36,7 @@ namespace VendingMachine.Domain
         public Product Product
         {
             get { return _product; }
-            set
+            private set
             {
                 _product = value ?? throw new InvalidOperationException(nameof(Product) + " is reauired.");
             }
@@ -54,7 +46,7 @@ namespace VendingMachine.Domain
         public ProductStockQuantity SalableStock
         {
             get { return _salableStock; }
-            set
+            private set
             {
                 _salableStock = value ?? throw new InvalidOperationException(nameof(SalableStock) + " is required.");
             }

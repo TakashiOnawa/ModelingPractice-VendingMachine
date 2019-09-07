@@ -12,7 +12,7 @@ namespace VendingMachine.Domain
             Price = price ?? throw new ArgumentNullException(nameof(name));
         }
 
-        public string Name { get; private set; }
-        public Price Price { get; private set; }
+        public string Name { get; }
+        public Price Price { get; }
     }
 }

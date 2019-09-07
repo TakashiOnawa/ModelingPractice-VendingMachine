@@ -7,17 +7,24 @@ namespace VendingMachine.Domain
 {
     public class Deposit
     {
-        private readonly List<Money> _depositMoneyList = new List<Money>();
+        private readonly MoneyStocks _moneyStocks = new MoneyStocks();
         private Amount _insertedAmount = Amount.EmptyAmount();
 
-        public void Restock(IEnumerable<Money> change)
+        public void SetMoneyStock(MoneyStock moneyStock)
         {
-            _depositMoneyList.AddRange(change);
+            _moneyStocks.SetMoneyStock(moneyStock);
+        }
+
+        public void RestockChange(Money money)
+        {
+            var moneyStock = _moneyStocks.FindWithValidation(money);
+            moneyStock.Add(money);
         }
 
         public void Post(Money money)
         {
-            _depositMoneyList.Add(money);
+            var moneyStock = _moneyStocks.FindWithValidation(money);
+            moneyStock.Add(money);
             _insertedAmount = _insertedAmount.Add(money);
         }
 
@@ -27,6 +34,14 @@ namespace VendingMachine.Domain
                 throw new InvalidOperationException("Can't purches.");
 
             _insertedAmount = _insertedAmount.Minus(price);
+        }
+
+        public bool CanPost(Money money)
+        {
+            var moneyStock = _moneyStocks.Find(money);
+            if (moneyStock == null) return false;
+            if (moneyStock.Full) return false;
+            return true;
         }
 
         public bool CanPurches(Price price)
@@ -60,7 +75,7 @@ namespace VendingMachine.Domain
 
             var remainingAmount = _insertedAmount.Minus(exceptPrice);
 
-            foreach (var groupingMoney in _depositMoneyList.GroupBy(_ => _.Value).OrderBy(_ => _.Key))
+            foreach (var groupingMoney in _moneyStocks.AllMoney().GroupBy(_ => _.Value).OrderBy(_ => _.Key))
             {
                 var currentMoneyList = groupingMoney.ToList();
                 var currentMoneyAmount = groupingMoney.Key;

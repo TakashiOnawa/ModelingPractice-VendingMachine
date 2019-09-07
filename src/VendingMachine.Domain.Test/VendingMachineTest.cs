@@ -84,6 +84,40 @@ namespace VendingMachine.Domain.Test
             Assert.AreEqual(Money._100, change.ElementAt(0));
         }
 
+        [TestMethod]
+        public void g—p‰Â”\‚È‚¨‹à‚Ì‚İ“Š“ü‚Å‚«‚é()
+        {
+            var vendingMachine = CreateVendingMachine();
+
+            Assert.IsFalse(vendingMachine.Post(Money._1));
+            Assert.IsFalse(vendingMachine.Post(Money._5));
+            Assert.IsTrue(vendingMachine.Post(Money._10));
+            Assert.IsTrue(vendingMachine.Post(Money._100));
+            Assert.IsTrue(vendingMachine.Post(Money._500));
+            Assert.IsFalse(vendingMachine.Post(Money._2000));
+            Assert.IsFalse(vendingMachine.Post(Money._5000));
+            Assert.IsFalse(vendingMachine.Post(Money._10000));
+        }
+
+        [TestMethod]
+        public void ãŒÀ–‡”ˆÈã‚Ì‚¨‹à‚Í“Š“ü‚Å‚«‚È‚¢()
+        {
+            var vendingMachine = CreateVendingMachine();
+
+            void TestPost(Money money, int maxPostableCount)
+            {
+                for (int i = 0; i < maxPostableCount; i++)
+                    Assert.IsTrue(vendingMachine.Post(money));
+
+                Assert.IsFalse(vendingMachine.Post(money));
+            }
+
+            TestPost(Money._10, 30);
+            TestPost(Money._100, 30);
+            TestPost(Money._500, 30);
+            TestPost(Money._1000, 30);
+        }
+
         private VendingMachine CreateVendingMachine()
         {
             var vendingMachine = new VendingMachine();

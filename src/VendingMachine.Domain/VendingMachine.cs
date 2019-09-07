@@ -10,14 +10,23 @@ namespace VendingMachine.Domain
         private readonly DisplayProducts _displayProducts = new DisplayProducts();
         private readonly Deposit _deposit = new Deposit();
 
+        public VendingMachine()
+        {
+            _deposit.SetMoneyStock(new MoneyStock(Money._10, 30));
+            _deposit.SetMoneyStock(new MoneyStock(Money._100, 30));
+            _deposit.SetMoneyStock(new MoneyStock(Money._500, 30));
+            _deposit.SetMoneyStock(new MoneyStock(Money._1000, 30));
+        }
+
         public void SetDisplayProduct(DisplayProduct displayProduct)
         {
             _displayProducts.SetDisplayProduct(displayProduct);
         }
 
-        public void RestockChange(IEnumerable<Money> change)
+        public void RestockChange(Money money, int restockCount)
         {
-            _deposit.Restock(change);
+            for (int i = 0; i < restockCount; i++)
+                _deposit.RestockChange(money);
         }
 
         public void RestockProduct(DisplayProductNumber displayProductNumber, ProductStockQuantity salableStock)
@@ -25,14 +34,19 @@ namespace VendingMachine.Domain
             _displayProducts.Restock(displayProductNumber, salableStock);
         }
 
-        public void Post(Money money)
+        public bool Post(Money money)
         {
+            if (!_deposit.CanPost(money))
+                return false;
+
             _deposit.Post(money);
+
+            return true;
         }
 
         public Product Purchase(DisplayProductNumber displayProductNumber)
         {
-            var displayProduct = _displayProducts.FindWithValidate(displayProductNumber);
+            var displayProduct = _displayProducts.FindWithValidation(displayProductNumber);
 
             if (displayProduct.SoldOut)
                 return null;
@@ -52,7 +66,7 @@ namespace VendingMachine.Domain
 
         public SalesStatus GetSalesStatus(DisplayProductNumber displayProductNumber)
         {
-            var displayProduct = _displayProducts.FindWithValidate(displayProductNumber);
+            var displayProduct = _displayProducts.FindWithValidation(displayProductNumber);
 
             if (displayProduct.SoldOut)
                 return SalesStatus.SoldOut;
