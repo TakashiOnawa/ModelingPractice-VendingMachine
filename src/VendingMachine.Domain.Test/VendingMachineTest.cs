@@ -1,4 +1,5 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Linq;
 
 namespace VendingMachine.Domain.Test
@@ -106,7 +107,7 @@ namespace VendingMachine.Domain.Test
 
             void TestPost(Money money, int maxPostableCount)
             {
-                for (int i = 0; i < maxPostableCount; i++)
+                for (int postCount = 0; postCount < maxPostableCount; postCount++)
                     Assert.IsTrue(vendingMachine.Post(money));
 
                 Assert.IsFalse(vendingMachine.Post(money));
@@ -116,6 +117,44 @@ namespace VendingMachine.Domain.Test
             TestPost(Money._100, 30);
             TestPost(Money._500, 30);
             TestPost(Money._1000, 30);
+        }
+
+        [TestMethod]
+        public void 商品数は50個まで()
+        {
+            var vendingMachine = new VendingMachine();
+
+            for (int productCount = 0; productCount < 50; productCount++)
+            {
+                var number = productCount + 1;
+                vendingMachine.SetDisplayProduct(new DisplayProduct(new DisplayProductNumber(number), new Product("テスト" + number, new Price(100))));
+            }
+
+            Assert.ThrowsException<InvalidOperationException>(() => 
+            {
+                vendingMachine.SetDisplayProduct(new DisplayProduct(new DisplayProductNumber(51), new Product("テスト" + 51, new Price(100))));
+            });
+        }
+
+        [TestMethod]
+        public void 商品の値段は10円以上300円以下でお釣りが返せる値段である()
+        {
+            var vendingMachine = new VendingMachine();
+            vendingMachine.SetDisplayProduct(new DisplayProduct(new DisplayProductNumber(1), new Product("テスト", new Price(10))));
+            vendingMachine.SetDisplayProduct(new DisplayProduct(new DisplayProductNumber(1), new Product("テスト", new Price(300))));
+
+            Assert.ThrowsException<InvalidOperationException>(() =>
+            {
+                vendingMachine.SetDisplayProduct(new DisplayProduct(new DisplayProductNumber(1), new Product("テスト", new Price(0))));
+            });
+            Assert.ThrowsException<InvalidOperationException>(() =>
+            {
+                vendingMachine.SetDisplayProduct(new DisplayProduct(new DisplayProductNumber(1), new Product("テスト", new Price(105))));
+            });
+            Assert.ThrowsException<InvalidOperationException>(() =>
+            {
+                vendingMachine.SetDisplayProduct(new DisplayProduct(new DisplayProductNumber(1), new Product("テスト", new Price(310))));
+            });
         }
 
         private VendingMachine CreateVendingMachine()

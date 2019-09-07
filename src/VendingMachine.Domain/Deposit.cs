@@ -10,6 +10,8 @@ namespace VendingMachine.Domain
         private readonly MoneyStocks _moneyStocks = new MoneyStocks();
         private Amount _insertedAmount = Amount.EmptyAmount();
 
+        public IEnumerable<Money> PostableMoney { get { return _moneyStocks.UsableMoney; } }
+
         public void SetMoneyStock(MoneyStock moneyStock)
         {
             _moneyStocks.SetMoneyStock(moneyStock);
@@ -75,7 +77,7 @@ namespace VendingMachine.Domain
 
             var remainingAmount = _insertedAmount.Minus(exceptPrice);
 
-            foreach (var groupingMoney in _moneyStocks.AllMoney().GroupBy(_ => _.Value).OrderBy(_ => _.Key))
+            foreach (var groupingMoney in _moneyStocks.AllMoney.GroupBy(_ => _.Value).OrderBy(_ => _.Key))
             {
                 var currentMoneyList = groupingMoney.ToList();
                 var currentMoneyAmount = groupingMoney.Key;

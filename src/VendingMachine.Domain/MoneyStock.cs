@@ -13,7 +13,7 @@ namespace VendingMachine.Domain
         {
             MoneyType = moneyType ?? throw new ArgumentNullException(nameof(moneyType));
 
-            if (maxStockCount < 0) throw new ArgumentException("Argument is zero or negative value.");
+            if (maxStockCount < 0) throw new ArgumentException(nameof(maxStockCount) + " is zero or negative value.");
             _maxStockCount = maxStockCount;
         }
 

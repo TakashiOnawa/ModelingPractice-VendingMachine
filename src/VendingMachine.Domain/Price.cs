@@ -4,10 +4,11 @@ using System.Text;
 
 namespace VendingMachine.Domain
 {
-    public class Price : IEquatable<Price>
+    public class Price : IEquatable<Price>, IComparable<Price>
     {
         public Price(int value)
         {
+            if (value < 0) throw new ArgumentException(nameof(value) + " is negative value.");
             Value = value;
         }
 
@@ -32,6 +33,11 @@ namespace VendingMachine.Domain
         public override int GetHashCode()
         {
             return Value.GetHashCode();
+        }
+
+        public int CompareTo(Price price)
+        {
+            return Value.CompareTo(price.Value);
         }
     }
 }

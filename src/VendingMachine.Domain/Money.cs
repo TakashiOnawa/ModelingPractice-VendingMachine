@@ -4,7 +4,7 @@ using System.Text;
 
 namespace VendingMachine.Domain
 {
-    public class Money : IEquatable<Money>
+    public class Money : IEquatable<Money>, IComparable<Money>
     {
         public static Money _1 = new Money(1);
         public static Money _5 = new Money(5);
@@ -37,6 +37,11 @@ namespace VendingMachine.Domain
         public override int GetHashCode()
         {
             return Value.GetHashCode();
+        }
+
+        public int CompareTo(Money price)
+        {
+            return Value.CompareTo(price.Value);
         }
     }
 }

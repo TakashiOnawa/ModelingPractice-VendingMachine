@@ -8,7 +8,7 @@ namespace VendingMachine.Domain
     {
         public Amount(int value)
         {
-            if (value < 0) throw new ArgumentException("Argument is negative value.");
+            if (value < 0) throw new ArgumentException(nameof(value) + " is negative value.");
             Value = value;
         }
 

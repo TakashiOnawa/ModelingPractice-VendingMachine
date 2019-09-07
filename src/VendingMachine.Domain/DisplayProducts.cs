@@ -8,9 +8,19 @@ namespace VendingMachine.Domain
     public class DisplayProducts
     {
         private readonly ConcurrentDictionary<DisplayProductNumber, DisplayProduct> _displayProducts = new ConcurrentDictionary<DisplayProductNumber, DisplayProduct>();
+        private readonly int _maxProductCount;
+
+        public DisplayProducts(int maxProductCount)
+        {
+            if (maxProductCount < 1) throw new ArgumentException(nameof(maxProductCount) + " is zero or negative value.");
+            _maxProductCount = maxProductCount;
+        }
 
         public void SetDisplayProduct(DisplayProduct displayProduct)
         {
+            if (!_displayProducts.ContainsKey(displayProduct.ProductNumber) && _displayProducts.Count >= _maxProductCount)
+                throw new InvalidOperationException("Products count is over maximum.");
+
             _displayProducts.AddOrUpdate(displayProduct.ProductNumber, displayProduct, (key, value) => displayProduct);
         }
 
