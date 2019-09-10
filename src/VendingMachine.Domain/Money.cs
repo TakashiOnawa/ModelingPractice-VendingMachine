@@ -9,6 +9,7 @@ namespace VendingMachine.Domain
         public static Money _1 = new Money(1);
         public static Money _5 = new Money(5);
         public static Money _10 = new Money(10);
+        public static Money _50 = new Money(50);
         public static Money _100 = new Money(100);
         public static Money _500 = new Money(500);
         public static Money _1000 = new Money(1000);
