@@ -14,7 +14,7 @@ namespace VendingMachine.Domain
 
         public void SetMoneyStock(MoneyStock moneyStock)
         {
-            _moneyStocks.SetMoneyStock(moneyStock);
+            _moneyStocks.AddOrUpdate(moneyStock);
         }
 
         public void RestockChange(Money money)

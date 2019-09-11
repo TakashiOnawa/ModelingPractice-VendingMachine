@@ -13,7 +13,7 @@ namespace VendingMachine.Domain
         public IEnumerable<Money> UsableMoney { get { return _moneyStocks.Keys; } }
         public IEnumerable<Money> AllMoney { get { return _moneyStocks.Values.SelectMany(_ => _.StockedMoney).ToArray(); } }
 
-        public void SetMoneyStock(MoneyStock moneyStock)
+        public void AddOrUpdate(MoneyStock moneyStock)
         {
             _moneyStocks.AddOrUpdate(moneyStock.MoneyType, moneyStock, (key, value) => moneyStock);
         }

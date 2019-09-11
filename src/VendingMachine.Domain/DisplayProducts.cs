@@ -16,7 +16,7 @@ namespace VendingMachine.Domain
             _maxProductCount = maxProductCount;
         }
 
-        public void SetDisplayProduct(DisplayProduct displayProduct)
+        public void AddOrUpdate(DisplayProduct displayProduct)
         {
             if (!_displayProducts.ContainsKey(displayProduct.ProductNumber) && _displayProducts.Count >= _maxProductCount)
                 throw new InvalidOperationException("Products count is over maximum.");
@@ -35,12 +35,6 @@ namespace VendingMachine.Domain
             var displayProduct = Find(displayProductNumber);
             if (displayProduct == null) throw new InvalidOperationException("DisplayProduct is not exists.");
             return displayProduct;
-        }
-
-        public void Restock(DisplayProductNumber displayProductNumber, ProductStockQuantity salableStock)
-        {
-            var displayProduct = FindWithValidation(displayProductNumber);
-            displayProduct.Restock(salableStock);
         }
     }
 }

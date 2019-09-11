@@ -26,7 +26,7 @@ namespace VendingMachine.Domain
                 displayProduct.DisplayPrice.Value < 10 ||
                 displayProduct.DisplayPrice.Value > 300)
                 throw new InvalidOperationException("Can't set the price.");
-            _displayProducts.SetDisplayProduct(displayProduct);
+            _displayProducts.AddOrUpdate(displayProduct);
         }
 
         public void RestockChange(Money money, int restockCount)
@@ -37,7 +37,8 @@ namespace VendingMachine.Domain
 
         public void RestockProduct(DisplayProductNumber displayProductNumber, ProductStockQuantity salableStock)
         {
-            _displayProducts.Restock(displayProductNumber, salableStock);
+            var displayProduct = _displayProducts.FindWithValidation(displayProductNumber);
+            displayProduct.Restock(salableStock);
         }
 
         public bool Post(Money money)
